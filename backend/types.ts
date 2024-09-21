@@ -8,6 +8,10 @@ export interface UserFields {
   token: string;
 }
 
+export interface CategoryFields {
+  title: 'Bicycles' | 'Flowers' | 'Clothes' | 'Cars';
+}
+
 export interface ProductsFields {
   user: mongoose.Types.ObjectId;
   category: mongoose.Types.ObjectId;
