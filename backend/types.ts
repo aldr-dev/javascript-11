@@ -9,7 +9,7 @@ export interface UserFields {
 }
 
 export interface CategoryFields {
-  title: 'Bicycles' | 'Flowers' | 'Clothes' | 'Cars';
+  title: 'Велосипеды' | 'Цветы' | 'Одежда' | 'Машины';
 }
 
 export interface ProductsFields {

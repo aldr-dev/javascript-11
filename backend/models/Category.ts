@@ -7,7 +7,7 @@ const CategorySchema = new mongoose.Schema<CategoryFields>({
     required: [true, 'Категория обязательна!'],
     unique: true,
     enum: {
-      values: ['Bicycles', 'Flowers', 'Clothes', 'Cars'],
+      values: ['Велосипеды', 'Цветы', 'Одежда', 'Машины'],
       message: 'Неизвестная категория!',
     },
   },
