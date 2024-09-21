@@ -4,6 +4,7 @@ import {toast} from 'react-toastify';
 import InfoIcon from '@mui/icons-material/Info';
 import {fetchProducts, filterByCategory} from './productsThunks';
 import {
+  Box,
   CircularProgress,
   Container,
   Grid,
@@ -16,20 +17,22 @@ import {
 import {Link, useParams} from 'react-router-dom';
 import {selectCategoriesData, selectGetCategoryLoading} from '../categories/categoriesSlice';
 import {getCategoriesData} from '../categories/categoriesThunks';
-// import {selectGetLoading} from './productsSlice';
+import {selectGetLoading, selectProductsData} from './productsSlice';
+import ProductCard from './components/ProductCard';
 
 const Products = () => {
   const dispatch = useAppDispatch();
   const {categoryId} = useParams();
   const categoryLoading = useAppSelector(selectGetCategoryLoading);
-  // const productLoading = useAppSelector(selectGetLoading);
-  const categories = useAppSelector(selectCategoriesData);
+  const productLoading = useAppSelector(selectGetLoading);
+  const categoriesData = useAppSelector(selectCategoriesData);
+  const productsData = useAppSelector(selectProductsData);
 
   useEffect(() => {
     const fetchCategoriesAndProductsData = async () => {
       try {
-        await dispatch(getCategoriesData()).unwrap();
         await dispatch(fetchProducts()).unwrap();
+        await dispatch(getCategoriesData()).unwrap();
       } catch (error) {
         toast.error('Произошла непредвиденная ошибка. Повторите попытку позже.');
         console.error('Произошла непредвиденная ошибка. Повторите попытку позже. ' + error);
@@ -48,7 +51,7 @@ const Products = () => {
 
 
   return (
-    <Container>
+    <Container sx={{mb: 3}}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <Grid container direction="column" spacing={2}>
@@ -63,11 +66,11 @@ const Products = () => {
                       <ListItemText onClick={() => dispatch(fetchProducts())} primary="Все товары"/>
                     </ListItemButton>
                   </ListItem>
-                  {categories.length === 0 ? (
-                    <Typography sx={{display: 'flex', alignItems: 'center'}} variant="body2" color="#000"><InfoIcon />&nbsp;Список категорий пуст.</Typography>
+                  {categoriesData.length === 0 ? (
+                    <Typography sx={{display: 'flex', alignItems: 'center'}} variant="body2" color="#000"><InfoIcon/>&nbsp;Список категорий пуст.</Typography>
                   ) : (
                     <>
-                      {categories.map((category) => (
+                      {categoriesData.map((category) => (
                         <ListItem key={category._id} disablePadding>
                           <ListItemButton
                             component={Link}
@@ -84,7 +87,18 @@ const Products = () => {
           </Grid>
         </Grid>
         <Grid item xs={9}>
-          2
+          {productLoading ? (<CircularProgress sx={{color: '#1976d2'}}/>) : (
+            <>
+              {productsData.length === 0 ? (
+                <Typography sx={{display: 'flex', alignItems: 'center'}} variant="body2" color="#000"><InfoIcon/>&nbsp;Список товаров пуст.</Typography>) : (
+                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 2}} >
+                  {productsData.map((product) => (
+                    <ProductCard key={product._id} product={product}/>
+                  ))}
+                </Box>
+              )}
+            </>
+          )}
         </Grid>
       </Grid>
     </Container>
