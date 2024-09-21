@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Product, ProductInfo, ValidationError} from '../../types';
 import {deleteProduct, fetchOneProduct, fetchProducts, filterByCategory, sendProductData} from './productsThunks';
 
@@ -25,7 +25,11 @@ const initialState: ProductsState = {
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    filterDeleteProduct: (state, {payload: id}: PayloadAction<string>) => {
+      state.productsData = state.productsData.filter((item) => item._id !== id);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(sendProductData.pending, (state) => {
       state.sendLoading = true;
@@ -87,19 +91,18 @@ export const productsSlice = createSlice({
     selectProductInfo: (state) => state.productInfo,
     selectSendLoading: (state) => state.sendLoading,
     selectGetLoading: (state) => state.getLoading,
-    selectGetOneLoading: (state) => state.getOneLoading,
     selectCreateError: (state) => state.createError,
     selectDeleteLoading: (state) => state.deleteLoading,
   },
 });
 
 export const productsReducer = productsSlice.reducer;
+export const {filterDeleteProduct} = productsSlice.actions;
 export const {
   selectProductsData,
   selectProductInfo,
   selectSendLoading,
   selectGetLoading,
-  selectGetOneLoading,
   selectCreateError,
   selectDeleteLoading,
 } = productsSlice.selectors;
